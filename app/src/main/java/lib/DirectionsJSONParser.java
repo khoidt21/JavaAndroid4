@@ -40,13 +40,13 @@ public class DirectionsJSONParser  {
                     Double latStart = jStartLocation.getDouble("lat");
                     HashMap<String,String> hmLatStartLocationLat = new HashMap<String, String>();
                     hmLatStartLocationLat.put("lat_start",Double.toString(latStart));
-
+//
                     Double lngStart = jStartLocation.getDouble("lng");
                     HashMap<String,String> hmLngStartLocation = new HashMap<String, String>();
                     hmLngStartLocation.put("lng_start",Double.toString(lngStart));
-
-                    // location end legs
-
+//
+//                    // location end legs
+//
                     jEndlocation = ((JSONObject) jLegs.get(j)).getJSONObject("end_location");
                     Double latEnd = jEndlocation.getDouble("lat");
                     HashMap<String,String> hmLatEndLocation = new HashMap<String, String>();
@@ -70,8 +70,8 @@ public class DirectionsJSONParser  {
                     hmDuration.put("duration", jDuration.getString("text"));
 
                     // add lat and lng cua diem bat dau
-                    path.add(hmLatStartLocationLat);
-                    path.add(hmLngStartLocation);
+                     path.add(hmLatStartLocationLat);
+                     path.add(hmLngStartLocation);
 
                     // add lat and lng cua diem ket thuc
                     path.add(hmLatEndLocation);
@@ -98,6 +98,7 @@ public class DirectionsJSONParser  {
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
                             hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
+
 
                             path.add(hm);
                         }

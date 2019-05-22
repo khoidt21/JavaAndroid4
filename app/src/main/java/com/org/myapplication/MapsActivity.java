@@ -216,11 +216,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             String distance="";
             String duration="";
-            Double latStartlocation;
-            Double lngStartlocation;
+            Double latStartlocation = null;
+            Double lngStartlocation = null;
 
-            Double latEndlocation;
-            Double lngEndlocation;
+            Double latEndlocation = null;
+            Double lngEndlocation = null;
 
 
             for (int i = 0; i < result.size(); i++) {
@@ -237,31 +237,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     HashMap<String, String> point = path.get(j);
 
-                    latStartlocation = Double.parseDouble(point.get("lat_start"));
-                    lngStartlocation = Double.parseDouble(point.get("lng_start"));
-
+                    if(j==0) {
+                        latStartlocation = Double.parseDouble(point.get("lat_start"));
+                        continue;
+                    }
+                    if(j==1){
+                        lngStartlocation = Double.parseDouble(point.get("lng_start"));
+                        continue;
+                    }
                     LatLng latLngStartLocation = new LatLng(latStartlocation,lngStartlocation);
-
-                    latEndlocation = Double.parseDouble(point.get("lat_end"));
-                    lngEndlocation = Double.parseDouble(point.get("lng_end"));
-
+//
+                    if(j==2){
+                        latEndlocation = Double.parseDouble(point.get("lat_end"));
+                        continue;
+                    }
+                    if(j==3) {
+                        lngEndlocation = Double.parseDouble(point.get("lng_end"));
+                        continue;
+                    }
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
-
+//
                     mMap.addMarker(new MarkerOptions()
                    .position(latLngStartLocation)
                    .title("From")
                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-                   mMap.addMarker(new MarkerOptions()
+                    mMap.addMarker(new MarkerOptions()
                         .position(latLngEndLocation));
 
-                   mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
 
 
-                    if(j==0){ // lay distance tu list
+                   if(j==4){ // lay distance tu list
                         distance = (String)point.get("distance");
                         continue;
-                    }else if(j==1){ // lay duration tu list
+                    }else if(j==5){ // lay duration tu list
                         duration = (String)point.get("duration");
                         continue;
                     }
