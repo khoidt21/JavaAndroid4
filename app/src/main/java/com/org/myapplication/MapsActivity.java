@@ -60,8 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView tvdistance;
     TextView tvduration;
 
-   // LocationManager lm;
-
     List<Marker> markerList = new ArrayList<>();
 
     @Override
@@ -94,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     private void searchLocation() throws UnsupportedEncodingException {
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Xin vui lòng chờ, đang tìm đường đi giữa hai điểm.");
+        progressDialog.setMessage("Vui lòng chờ, đang tìm đường đi giữa hai điểm.");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -191,7 +189,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
-        // Parsing the data in non-ui thread
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
 
@@ -200,7 +197,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 jObject = new JSONObject(jsonData[0]);
                 DirectionsJSONParser parser = new DirectionsJSONParser();
-
                 routes = parser.parse(jObject);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -219,11 +215,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             String distance="";
             String duration="";
-            Double latendlocation;
-            Double lngendlocation;
+            Double latStartlocation;
+            Double lngStartlocation;
 
-         //   Double latstartlocation;
-           // Double lngstartlocation;
+            Double latEndlocation;
+            Double lngEndlocation;
+
+
 
             points = new ArrayList();
             for (int i = 0; i < result.size(); i++) {
@@ -235,10 +233,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
 
-                    latendlocation = Double.parseDouble(point.get("lat_end"));
-                    lngendlocation = Double.parseDouble(point.get("lng_end"));
+                    latStartlocation = Double.parseDouble(point.get("lat_start"));
+                    lngStartlocation = Double.parseDouble(point.get("lng_start"));
 
-                    LatLng latLngEndLocation = new LatLng(latendlocation,lngendlocation);
+                    LatLng latLngStartLocation = new LatLng(latStartlocation,lngStartlocation);
+
+                    latEndlocation = Double.parseDouble(point.get("lat_end"));
+                    lngEndlocation = Double.parseDouble(point.get("lng_end"));
+
+                    LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
+
+                    mMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+                            .title("origin")
+                            .position(latLngStartLocation));
+                    mMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                            .title("destination")
+                            .position(latLngEndLocation));
+
+                    PolylineOptions polylineOptions = new PolylineOptions().
+                            geodesic(true).
+                            color(Color.BLUE).
+                            width(10);
 
                     if(j==0){ // lay distance tu list
                         distance = (String)point.get("distance");
@@ -253,6 +270,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     LatLng position = new LatLng(lat, lng);
                     points.add(position);
+                    points.add(latLngStartLocation);
+                    points.add(latLngEndLocation);
                 }
 
                 lineOptions.addAll(points);

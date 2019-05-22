@@ -18,8 +18,8 @@ public class DirectionsJSONParser  {
         JSONArray jSteps = null;
         JSONObject jDistance = null;
         JSONObject jDuration = null;
+        JSONObject jStartLocation = null;
         JSONObject jEndlocation = null;
-
 
         try {
 
@@ -33,35 +33,54 @@ public class DirectionsJSONParser  {
                 /** Traversing all legs */
                 for(int j=0;j<jLegs.length();j++){
 
+                    // location start legs
+
+                    jStartLocation = ((JSONObject) jLegs.get(j)).getJSONObject("start_location");
+                    Double latStart = jStartLocation.getDouble("lat");
+                    HashMap<String,String> hmLatStartLocationLat = new HashMap<String, String>();
+                    hmLatStartLocationLat.put("lat_start",Double.toString(latStart));
+
+                    Double lngStart = jStartLocation.getDouble("lng");
+                    HashMap<String,String> hmLngStartLocation = new HashMap<String, String>();
+                    hmLngStartLocation.put("lng_start",Double.toString(lngStart));
+
+                    // location end legs
+
                     jEndlocation = ((JSONObject) jLegs.get(j)).getJSONObject("end_location");
-                    Double lat1 = jEndlocation.getDouble("lat");
-                    HashMap<String,String> htmLatEndLocation = new HashMap<String, String>();
-                    htmLatEndLocation.put("lat_end",Double.toString(lat1));
+                    Double latEnd = jEndlocation.getDouble("lat");
+                    HashMap<String,String> hmLatEndLocation = new HashMap<String, String>();
+                    hmLatEndLocation.put("lat_end",Double.toString(latEnd));
 
-                    Double lat2 = jEndlocation.getDouble("lng");
-                    HashMap<String,String> htmLngEndLocation = new HashMap<String, String>();
-                    htmLatEndLocation.put("lng_end",Double.toString(lat2));
-
-
+                    Double lngEnd = jEndlocation.getDouble("lng");
+                    HashMap<String,String> hmLngEndLocation = new HashMap<String, String>();
+                    hmLngEndLocation.put("lng_end",Double.toString(lngEnd));
 
 
-                    /** Getting distance from the json data */
+
+
+                    // Lay distance tu json data */
                     jDistance = ((JSONObject) jLegs.get(j)).getJSONObject("distance");
                     HashMap<String, String> hmDistance = new HashMap<String, String>();
                     hmDistance.put("distance", jDistance.getString("text"));
 
-                    /** Getting duration from the json data */
+                    // Lay duration tu json data */
                     jDuration = ((JSONObject) jLegs.get(j)).getJSONObject("duration");
                     HashMap<String, String> hmDuration = new HashMap<String, String>();
                     hmDuration.put("duration", jDuration.getString("text"));
 
-                    //path.add(hmEndLocation);
-                    path.add(htmLatEndLocation);
+                    // add lat and lng cua diem bat dau
+                    path.add(hmLatStartLocationLat);
+                    path.add(hmLngStartLocation);
 
-                    /** Adding distance object to the path */
+                    // add lat and lng cua diem ket thuc
+                    path.add(hmLatEndLocation);
+                    path.add(hmLngEndLocation);
+
+
+                    // Adding distance object vao path
                     path.add(hmDistance);
 
-                    /** Adding duration object to the path */
+                    /** Adding duration object vao path
                     path.add(hmDuration);
 
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
