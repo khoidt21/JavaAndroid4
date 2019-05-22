@@ -64,24 +64,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     List<Marker> markerList = new ArrayList<>();
 
-
-//    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
-//
-//    String keyAPI = "AIzaSyAGqOwbGtnXAIlQ3hoYvgYwDMRHKBgYYHo";
-
-   // LatLng origin = new LatLng(20.963669, 105.823021);
-    //LatLng dest = new LatLng(21.005645, 105.824216);
-
-    //LatLng latLngOrigin;
-    //LatLng latLngDest;
-    //String provider;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.\
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -117,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void drawPolylines() throws UnsupportedEncodingException {
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Please Wait, Polyline between two locations is building.");
+        progressDialog.setMessage("Xin vui lòng chờ, đang tìm đường đi giữa hai điểm.");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -238,6 +225,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
             progressDialog.dismiss();
+
             Log.d("result", result.toString());
             ArrayList points = null;
             PolylineOptions lineOptions = null;
@@ -245,7 +233,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String distance="";
             String duration="";
 
-            //double lng = 0;
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList();
                 lineOptions = new PolylineOptions();
@@ -253,10 +240,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
 
-                    if(j==0){ // Get distance from the list
+                    if(j==0){ // lay distance tu list
                         distance = (String)point.get("distance");
                         continue;
-                    }else if(j==1){ // Get duration from the list
+                    }else if(j==1){ // lay duration tu list
                         duration = (String)point.get("duration");
                         continue;
                     }
@@ -275,9 +262,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             Log.d("log 1================",lineOptions.toString());
 
-            // Drawing polyline in the Google Map for the i-th route
             tvdistance.setText(distance);
             tvduration.setText(duration);
+            // Ve tuyen duong di len google map
             mMap.addPolyline(lineOptions);
         }
     }
