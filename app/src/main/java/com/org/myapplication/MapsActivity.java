@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -259,6 +260,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("log 1================",lineOptions.toString());
 
             // Drawing polyline in the Google Map for the i-th route
+            //mMap.addPolyline(lineOptions);
+           // Polyline polyline = mMap.addPolyline(lineOptions);
             mMap.addPolyline(lineOptions);
         }
     }
