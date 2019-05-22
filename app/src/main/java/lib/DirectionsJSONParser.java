@@ -18,6 +18,7 @@ public class DirectionsJSONParser  {
         JSONArray jSteps = null;
         JSONObject jDistance = null;
         JSONObject jDuration = null;
+
         JSONObject jStartLocation = null;
         JSONObject jEndlocation = null;
 
@@ -80,7 +81,8 @@ public class DirectionsJSONParser  {
                     // Adding distance object vao path
                     path.add(hmDistance);
 
-                    /** Adding duration object vao path
+                    // Adding duration object vao path
+
                     path.add(hmDuration);
 
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");

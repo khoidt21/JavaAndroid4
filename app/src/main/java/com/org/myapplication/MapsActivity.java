@@ -211,6 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             Log.d("result", result.toString());
             ArrayList points = null;
+
             PolylineOptions lineOptions = null;
 
             String distance="";
@@ -222,15 +223,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Double lngEndlocation;
 
 
-
-            points = new ArrayList();
             for (int i = 0; i < result.size(); i++) {
-
+                points = new ArrayList();
                 lineOptions = new PolylineOptions();
+
                 List<HashMap<String, String>> path = result.get(i);
 
+//                lineOptions = new PolylineOptions();
+
+                //PolylineOptions lineOptions = new PolylineOptions();
 
                 for (int j = 0; j < path.size(); j++) {
+
                     HashMap<String, String> point = path.get(j);
 
                     latStartlocation = Double.parseDouble(point.get("lat_start"));
@@ -244,18 +248,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
 
                     mMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
-                            .title("origin")
-                            .position(latLngStartLocation));
-                    mMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
-                            .title("destination")
-                            .position(latLngEndLocation));
+                   .position(latLngStartLocation)
+                   .title("From")
+                   .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-                    PolylineOptions polylineOptions = new PolylineOptions().
-                            geodesic(true).
-                            color(Color.BLUE).
-                            width(10);
+                   mMap.addMarker(new MarkerOptions()
+                        .position(latLngEndLocation));
+
+                   mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
+
 
                     if(j==0){ // lay distance tu list
                         distance = (String)point.get("distance");
@@ -270,18 +271,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     LatLng position = new LatLng(lat, lng);
                     points.add(position);
-                    points.add(latLngStartLocation);
-                    points.add(latLngEndLocation);
+                   // points.add(latLngStartLocation);
+                   // points.add(latLngEndLocation);
+
+                    // points.add(latLngStartLocation);
+                   // points.add(latLngEndLocation);
                 }
 
                 lineOptions.addAll(points);
                 lineOptions.width(12);
                 lineOptions.color(Color.RED);
                 lineOptions.geodesic(true);
+                Log.d("log 1================",lineOptions.toString());
+
 
             }
-            Log.d("log 1================",lineOptions.toString());
-
             tvdistance.setText(distance);
             tvduration.setText(duration);
             // Ve tuyen duong di len google map
