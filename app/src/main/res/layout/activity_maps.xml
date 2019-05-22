@@ -39,7 +39,7 @@
             android:id="@+id/icon1"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:paddingLeft="30dp"
+            android:paddingLeft="50dp"
             android:src="@drawable/ic_clock"
             android:paddingBottom="20dp"
             />

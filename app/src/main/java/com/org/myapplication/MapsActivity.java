@@ -84,25 +84,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  seachLoction();
-
                 try {
-                    drawPolylines();
+                    searchLocation();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-//        try {
-//            drawPolylines();
-//        } catch (UnsupportedEncodingException e) {
-//           e.printStackTrace();
-//       }
     }
-
-
-    private void drawPolylines() throws UnsupportedEncodingException {
+    private void searchLocation() throws UnsupportedEncodingException {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Xin vui lòng chờ, đang tìm đường đi giữa hai điểm.");
         progressDialog.setCancelable(false);
@@ -114,12 +104,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         DirectionsUrl directionsUrl = new DirectionsUrl();
         String url = directionsUrl.url(origin,dest);
 
-
-        //String url = directionsUrl.url();
-
         Log.d("url", url + "");
         DownloadTask downloadTask = new DownloadTask();
-        // Start downloading json data from Google Directions API
+        // Downlaod du lieu JSON tu Google Directions API
         downloadTask.execute(url);
 
 
@@ -232,13 +219,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             String distance="";
             String duration="";
+            Double latendlocation;
+            Double lngendlocation;
 
+         //   Double latstartlocation;
+           // Double lngstartlocation;
+
+            points = new ArrayList();
             for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList();
+
                 lineOptions = new PolylineOptions();
                 List<HashMap<String, String>> path = result.get(i);
+
+
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
+
+                    latendlocation = Double.parseDouble(point.get("lat_end"));
+                    lngendlocation = Double.parseDouble(point.get("lng_end"));
+
+                    LatLng latLngEndLocation = new LatLng(latendlocation,lngendlocation);
 
                     if(j==0){ // lay distance tu list
                         distance = (String)point.get("distance");
@@ -254,6 +254,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng position = new LatLng(lat, lng);
                     points.add(position);
                 }
+
                 lineOptions.addAll(points);
                 lineOptions.width(12);
                 lineOptions.color(Color.RED);

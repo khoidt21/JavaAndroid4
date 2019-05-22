@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.datatype.Duration;
-
 public class DirectionsJSONParser  {
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
@@ -20,7 +18,7 @@ public class DirectionsJSONParser  {
         JSONArray jSteps = null;
         JSONObject jDistance = null;
         JSONObject jDuration = null;
-
+        JSONObject jEndlocation = null;
 
 
         try {
@@ -35,6 +33,18 @@ public class DirectionsJSONParser  {
                 /** Traversing all legs */
                 for(int j=0;j<jLegs.length();j++){
 
+                    jEndlocation = ((JSONObject) jLegs.get(j)).getJSONObject("end_location");
+                    Double lat1 = jEndlocation.getDouble("lat");
+                    HashMap<String,String> htmLatEndLocation = new HashMap<String, String>();
+                    htmLatEndLocation.put("lat_end",Double.toString(lat1));
+
+                    Double lat2 = jEndlocation.getDouble("lng");
+                    HashMap<String,String> htmLngEndLocation = new HashMap<String, String>();
+                    htmLatEndLocation.put("lng_end",Double.toString(lat2));
+
+
+
+
                     /** Getting distance from the json data */
                     jDistance = ((JSONObject) jLegs.get(j)).getJSONObject("distance");
                     HashMap<String, String> hmDistance = new HashMap<String, String>();
@@ -44,6 +54,9 @@ public class DirectionsJSONParser  {
                     jDuration = ((JSONObject) jLegs.get(j)).getJSONObject("duration");
                     HashMap<String, String> hmDuration = new HashMap<String, String>();
                     hmDuration.put("duration", jDuration.getString("text"));
+
+                    //path.add(hmEndLocation);
+                    path.add(htmLatEndLocation);
 
                     /** Adding distance object to the path */
                     path.add(hmDistance);
