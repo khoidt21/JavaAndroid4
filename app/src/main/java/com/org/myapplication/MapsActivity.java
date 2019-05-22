@@ -3,6 +3,7 @@ package com.org.myapplication;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -54,21 +55,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     EditText editDestnation;
     Button btnFindPath;
     ProgressDialog progressDialog;
-    LocationManager lm;
+   // LocationManager lm;
 
     List<Marker> markerList = new ArrayList<>();
 
 
-    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
+//    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
+//
+//    String keyAPI = "AIzaSyAGqOwbGtnXAIlQ3hoYvgYwDMRHKBgYYHo";
 
-    String keyAPI = "AIzaSyAGqOwbGtnXAIlQ3hoYvgYwDMRHKBgYYHo";
+   // LatLng origin = new LatLng(20.963669, 105.823021);
+    //LatLng dest = new LatLng(21.005645, 105.824216);
 
-    LatLng origin = new LatLng(20.963669, 105.823021);
-    LatLng dest = new LatLng(21.005645, 105.824216);
-
-    LatLng latLngOrigin;
-    LatLng latLngDest;
-    String provider;
+    //LatLng latLngOrigin;
+    //LatLng latLngDest;
+    //String provider;
 
 
     @Override
@@ -81,9 +82,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-       // lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-       // provider = lm.getBestProvider(new Criteria(), false);
-
         editOrigin = (EditText) findViewById(R.id.editOrigin);
         editDestnation = (EditText) findViewById(R.id.editDest);
         btnFindPath = (Button) findViewById(R.id.btnFindPath);
@@ -93,19 +91,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
               //  seachLoction();
-//                try {
-//                    drawPolylines();
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
+
+                try {
+                    drawPolylines();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        try {
-            drawPolylines();
-        } catch (UnsupportedEncodingException e) {
-           e.printStackTrace();
-       }
+//        try {
+//            drawPolylines();
+//        } catch (UnsupportedEncodingException e) {
+//           e.printStackTrace();
+//       }
     }
 
 
@@ -115,34 +114,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-//        final Geocoder geocoder = new Geocoder(this);
-//        List<Address> addressListOrigin  = null;
-//
-//        try {
-//            String origin = editOrigin.getText().toString();
-//            addressListOrigin = geocoder.getFromLocationName(origin, 1);
-//
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//        Address address = addressListOrigin.get(0);
-//        latLngOrigin = new LatLng(address.getLatitude(),address.getLongitude());
-//
-//        List<Address> addressListDest  = null;
-//
-//        try {
-//            String dest = editDestnation.getText().toString();
-//            addressListDest = geocoder.getFromLocationName(dest, 1);
-//
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//        Address addressDest = addressListDest.get(0);
-//        latLngDest = new LatLng(address.getLatitude(),address.getLongitude());
-
+        String origin = editOrigin.getText().toString();
+        String dest = editDestnation.getText().toString();
 
         DirectionsUrl directionsUrl = new DirectionsUrl();
-
         String url = directionsUrl.url(origin,dest);
 
 
@@ -159,63 +134,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+//        mMap = googleMap;
+//        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(origin)
+//                .title("LinkedIn")
+//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+//
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(dest));
+//
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
 
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        googleMap.addMarker(new MarkerOptions()
-                .position(origin)
-                .title("LinkedIn")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        LatLng currentLocation = new LatLng(20.963081, 105.822766);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
+        markerList.add(mMap.addMarker(new MarkerOptions()
+                .title("Xôi Gà Vinh Hoa")
+                .position(currentLocation)));
 
-        googleMap.addMarker(new MarkerOptions()
-                .position(dest));
-
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
-
-//        mMap = googleMap;
-//        LatLng hcmus = new LatLng(20.963081, 105.822766);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 18));
-//        markerList.add(mMap.addMarker(new MarkerOptions()
-//                .title("Xôi Gà Vinh Hoa")
-//                .position(hcmus)));
-//
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        mMap.setMyLocationEnabled(true);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
-//        try {
-//            drawPolylines();
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        lm.requestLocationUpdates(provider, 400, 1, this);
-//        lat = location.getLatitude();
-//        lng = location.getLongitude();
-//        marker.setPosition(new LatLng(lat,lng));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat,lng)));
 
     }
 
@@ -243,7 +195,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String data = "";
             try {
                 data = jsonDataFromURL.downloadUrl(url[0]);
-
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
             }
@@ -284,6 +235,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ArrayList points = null;
             PolylineOptions lineOptions = null;
 
+            //double lat = 0;
+            //double lng = 0;
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList();
                 lineOptions = new PolylineOptions();
@@ -299,7 +252,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lineOptions.width(12);
                 lineOptions.color(Color.RED);
                 lineOptions.geodesic(true);
+
+               // mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker()).title("From").position());
+               // mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker()).title("To").position());
             }
+            Log.d("log 1================",lineOptions.toString());
 
             // Drawing polyline in the Google Map for the i-th route
             mMap.addPolyline(lineOptions);
