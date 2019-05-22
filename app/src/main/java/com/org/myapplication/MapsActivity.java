@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,6 +57,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     EditText editDestnation;
     Button btnFindPath;
     ProgressDialog progressDialog;
+    TextView tvdistance;
+    TextView tvduration;
+
    // LocationManager lm;
 
     List<Marker> markerList = new ArrayList<>();
@@ -85,10 +89,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         editOrigin = (EditText) findViewById(R.id.editOrigin);
         editDestnation = (EditText) findViewById(R.id.editDest);
+        tvdistance = (TextView) findViewById(R.id.tvDistance);
+        tvduration = (TextView) findViewById(R.id.tvDuration);
         btnFindPath = (Button) findViewById(R.id.btnFindPath);
 
 
-         btnFindPath.setOnClickListener(new View.OnClickListener() {
+        btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
               //  seachLoction();
@@ -236,7 +242,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ArrayList points = null;
             PolylineOptions lineOptions = null;
 
-            //double lat = 0;
+            String distance="";
+            String duration="";
+
             //double lng = 0;
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList();
@@ -244,8 +252,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 List<HashMap<String, String>> path = result.get(i);
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
+
+                    if(j==0){ // Get distance from the list
+                        distance = (String)point.get("distance");
+                        continue;
+                    }else if(j==1){ // Get duration from the list
+                        duration = (String)point.get("duration");
+                        continue;
+                    }
+
                     double lat = Double.parseDouble(point.get("lat"));
                     double lng = Double.parseDouble(point.get("lng"));
+
                     LatLng position = new LatLng(lat, lng);
                     points.add(position);
                 }
@@ -254,14 +272,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lineOptions.color(Color.RED);
                 lineOptions.geodesic(true);
 
-               // mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker()).title("From").position());
-               // mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker()).title("To").position());
             }
             Log.d("log 1================",lineOptions.toString());
 
             // Drawing polyline in the Google Map for the i-th route
-            //mMap.addPolyline(lineOptions);
-           // Polyline polyline = mMap.addPolyline(lineOptions);
+            tvdistance.setText(distance);
+            tvduration.setText(duration);
             mMap.addPolyline(lineOptions);
         }
     }

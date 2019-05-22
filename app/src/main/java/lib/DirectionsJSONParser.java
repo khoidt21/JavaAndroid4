@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.datatype.Duration;
+
 public class DirectionsJSONParser  {
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
@@ -16,6 +18,10 @@ public class DirectionsJSONParser  {
         JSONArray jRoutes = null;
         JSONArray jLegs = null;
         JSONArray jSteps = null;
+        JSONObject jDistance = null;
+        JSONObject jDuration = null;
+
+
 
         try {
 
@@ -28,6 +34,23 @@ public class DirectionsJSONParser  {
 
                 /** Traversing all legs */
                 for(int j=0;j<jLegs.length();j++){
+
+                    /** Getting distance from the json data */
+                    jDistance = ((JSONObject) jLegs.get(j)).getJSONObject("distance");
+                    HashMap<String, String> hmDistance = new HashMap<String, String>();
+                    hmDistance.put("distance", jDistance.getString("text"));
+
+                    /** Getting duration from the json data */
+                    jDuration = ((JSONObject) jLegs.get(j)).getJSONObject("duration");
+                    HashMap<String, String> hmDuration = new HashMap<String, String>();
+                    hmDuration.put("duration", jDuration.getString("text"));
+
+                    /** Adding distance object to the path */
+                    path.add(hmDistance);
+
+                    /** Adding duration object to the path */
+                    path.add(hmDuration);
+
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
 
                     /** Traversing all steps */
@@ -41,6 +64,7 @@ public class DirectionsJSONParser  {
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
                             hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
+
                             path.add(hm);
                         }
                     }
