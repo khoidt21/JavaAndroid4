@@ -192,7 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return routes;
         }
-        
+
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
@@ -243,9 +243,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //
                   //  mMap.clear();
 
-
-
-
                    if(j==4){ // lay distance tu list
                         distance = (String)point.get("distance");
                         continue;
@@ -267,7 +264,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue)));
 
                     mMap.addMarker(new MarkerOptions()
-                            .position(latLngEndLocation));
+                            .position(latLngEndLocation).title("To").icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green)));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
                 }
 
