@@ -18,7 +18,6 @@ public class DirectionsJSONParser  {
         JSONArray jSteps = null;
         JSONObject jDistance = null;
         JSONObject jDuration = null;
-
         JSONObject jStartLocation = null;
         JSONObject jEndlocation = null;
 
@@ -26,12 +25,12 @@ public class DirectionsJSONParser  {
 
             jRoutes = jObject.getJSONArray("routes");
 
-            /** Traversing all routes */
+            // duyet tat ca routers
             for(int i=0;i<jRoutes.length();i++){
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<HashMap<String, String>>();
 
-                /** Traversing all legs */
+                // duyet tat ca legs
                 for(int j=0;j<jLegs.length();j++){
 
                     // location start legs
@@ -55,8 +54,6 @@ public class DirectionsJSONParser  {
                     Double lngEnd = jEndlocation.getDouble("lng");
                     HashMap<String,String> hmLngEndLocation = new HashMap<String, String>();
                     hmLngEndLocation.put("lng_end",Double.toString(lngEnd));
-
-
 
 
                     // Lay distance tu json data */

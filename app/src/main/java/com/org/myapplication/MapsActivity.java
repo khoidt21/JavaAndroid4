@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -77,8 +79,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tvdistance = (TextView) findViewById(R.id.tvDistance);
         tvduration = (TextView) findViewById(R.id.tvDuration);
         btnFindPath = (Button) findViewById(R.id.btnFindPath);
-
-
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
     }
     private void searchLocation() throws UnsupportedEncodingException {
         progressDialog = new ProgressDialog(this);
@@ -106,25 +107,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         DownloadTask downloadTask = new DownloadTask();
         // Downlaod du lieu JSON tu Google Directions API
         downloadTask.execute(url);
-
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-//        mMap = googleMap;
-//        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-//        googleMap.addMarker(new MarkerOptions()
-//                .position(origin)
-//                .title("LinkedIn")
-//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-//
-//        googleMap.addMarker(new MarkerOptions()
-//                .position(dest));
-//
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
-
         mMap = googleMap;
         LatLng currentLocation = new LatLng(20.963081, 105.822766);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
@@ -143,7 +129,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap.setMyLocationEnabled(true);
+       // mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getMyLocation();
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -203,12 +192,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return routes;
         }
-
+        
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
             progressDialog.dismiss();
-
             Log.d("result", result.toString());
             ArrayList points = null;
 
@@ -222,21 +210,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Double latEndlocation = null;
             Double lngEndlocation = null;
 
-
+            if(result.size() < 1){
+                Toast.makeText(getBaseContext(),"Không tìm thấy đường đi.",Toast.LENGTH_SHORT).show();
+                return;
+            }
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList();
                 lineOptions = new PolylineOptions();
 
                 List<HashMap<String, String>> path = result.get(i);
-
-//                lineOptions = new PolylineOptions();
-
-                //PolylineOptions lineOptions = new PolylineOptions();
-
                 for (int j = 0; j < path.size(); j++) {
-
                     HashMap<String, String> point = path.get(j);
-
                     if(j==0) {
                         latStartlocation = Double.parseDouble(point.get("lat_start"));
                         continue;
@@ -257,15 +241,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
 //
-                    mMap.addMarker(new MarkerOptions()
-                   .position(latLngStartLocation)
-                   .title("From")
-                   .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                  //  mMap.clear();
 
-                    mMap.addMarker(new MarkerOptions()
-                        .position(latLngEndLocation));
 
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
 
 
                    if(j==4){ // lay distance tu list
@@ -278,14 +256,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     double lat = Double.parseDouble(point.get("lat"));
                     double lng = Double.parseDouble(point.get("lng"));
-
                     LatLng position = new LatLng(lat, lng);
+                    if(points.size() > 1){
+                        mMap.clear();
+                    }
                     points.add(position);
-                   // points.add(latLngStartLocation);
-                   // points.add(latLngEndLocation);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(latLngStartLocation)
+                            .title("From")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue)));
 
-                    // points.add(latLngStartLocation);
-                   // points.add(latLngEndLocation);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(latLngEndLocation));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
                 }
 
                 lineOptions.addAll(points);
@@ -294,11 +277,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lineOptions.geodesic(true);
                 Log.d("log 1================",lineOptions.toString());
 
-
             }
             tvdistance.setText(distance);
             tvduration.setText(duration);
             // Ve tuyen duong di len google map
+           // mMap.clear();
             mMap.addPolyline(lineOptions);
         }
     }

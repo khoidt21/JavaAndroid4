@@ -37,11 +37,11 @@
             android:text="0 km" />
         <ImageView
             android:id="@+id/icon1"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             android:paddingLeft="50dp"
             android:src="@drawable/ic_clock"
-            android:paddingBottom="20dp"
+            android:paddingBottom="40dp"
             />
         <TextView
             android:id="@+id/tvDuration"
