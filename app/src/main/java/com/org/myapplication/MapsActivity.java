@@ -2,6 +2,7 @@ package com.org.myapplication;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,8 +12,11 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -24,17 +28,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONObject;
 
@@ -48,11 +61,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+
 import lib.DirectionsJSONParser;
 import lib.DirectionsUrl;
 import lib.JsonDataFromURL;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
 
     GoogleMap mMap;
     EditText editOrigin;
@@ -61,6 +76,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ProgressDialog progressDialog;
     TextView tvdistance;
     TextView tvduration;
+
+
+    private static final int LOCATION_REQUEST = 10;
+
+    private String[] LOCATION_PERMS = {android.Manifest.permission.ACCESS_FINE_LOCATION };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
         editOrigin = (EditText) findViewById(R.id.editOrigin);
         editDestnation = (EditText) findViewById(R.id.editDest);
@@ -87,30 +108,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-
     }
+
     private void searchLocation() throws UnsupportedEncodingException {
 
         String origin = editOrigin.getText().toString();
         String dest = editDestnation.getText().toString();
-        if(origin.isEmpty()){
-            Toast.makeText(getBaseContext(),"Enter origin address.",Toast.LENGTH_SHORT).show();
+        if (origin.isEmpty()) {
+            Toast.makeText(getBaseContext(), "Enter origin address.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(dest.isEmpty()){
-            Toast.makeText(getBaseContext(),"Enter destination address.",Toast.LENGTH_SHORT).show();
+        if (dest.isEmpty()) {
+            Toast.makeText(getBaseContext(), "Enter destination address.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Vui lòng chờ, đang tìm đường đi giữa hai điểm.");
+        progressDialog.setMessage("Waiting...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
 
-
         DirectionsUrl directionsUrl = new DirectionsUrl();
-        String url = directionsUrl.url(origin,dest);
+        String url = directionsUrl.url(origin, dest);
 
         Log.d("url", url + "");
         DownloadTask downloadTask = new DownloadTask();
@@ -121,27 +141,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng currentLocation = new LatLng(20.963081, 105.822766);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
-        mMap.addMarker(new MarkerOptions()
-                .title("Xôi Gà Vinh Hoa")
-                .position(currentLocation));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this, LOCATION_PERMS, LOCATION_REQUEST);
+            } else {
+                ActivityCompat.requestPermissions(this, LOCATION_PERMS, LOCATION_REQUEST);
+            }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        } else {
+            mMap.setMyLocationEnabled(true);
+            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+
+                                LatLng userCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                CameraPosition cp = CameraPosition.builder().target(userCurrentLocation).zoom(25).build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp), 500, null);
+                            }
+                        }
+                    });
         }
-        mMap.setMyLocationEnabled(true);
-       // mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getMyLocation();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case LOCATION_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onMapReady(mMap);
+                } else {
+                    //Toast.makeText(this, R.string.location_permission_required_message, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+            }
+        }
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -160,6 +202,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
@@ -238,7 +295,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         continue;
                     }
                     LatLng latLngStartLocation = new LatLng(latStartlocation,lngStartlocation);
-//
                     if(j==2){
                         latEndlocation = Double.parseDouble(point.get("lat_end"));
                         continue;
@@ -248,10 +304,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         continue;
                     }
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
-//
-                  //  mMap.clear();
 
-                   if(j==4){ // lay distance tu list
+                    if(j==4){ // lay distance tu list
                         distance = (String)point.get("distance");
                         continue;
                     }else if(j==5){ // lay duration tu list
@@ -266,6 +320,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.clear();
                     }
                     points.add(position);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
                     mMap.addMarker(new MarkerOptions()
                             .position(latLngStartLocation)
                             .title("From")
@@ -273,7 +328,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     mMap.addMarker(new MarkerOptions()
                             .position(latLngEndLocation).title("To").icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green)));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
                 }
 
                 lineOptions.addAll(points);
