@@ -66,22 +66,19 @@ public class DirectionsJSONParser  {
                     HashMap<String, String> hmDuration = new HashMap<String, String>();
                     hmDuration.put("duration", jDuration.getString("text"));
 
-                    // add lat and lng cua diem bat dau
+                    // add lat object and lng object cua diem bat dau vao path
                      path.add(hmLatStartLocationLat);
                      path.add(hmLngStartLocation);
 
-                    // add lat and lng cua diem ket thuc
+                    // add lat object and lng object cua diem ket thuc vao path
                     path.add(hmLatEndLocation);
                     path.add(hmLngEndLocation);
 
 
                     // Adding distance object vao path
                     path.add(hmDistance);
-
                     // Adding duration object vao path
-
                     path.add(hmDuration);
-
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
 
                     /** Traversing all steps */

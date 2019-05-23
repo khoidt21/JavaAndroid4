@@ -62,8 +62,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView tvdistance;
     TextView tvduration;
 
-    List<Marker> markerList = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,13 +90,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
     private void searchLocation() throws UnsupportedEncodingException {
+
+        String origin = editOrigin.getText().toString();
+        String dest = editDestnation.getText().toString();
+        if(origin.isEmpty()){
+            Toast.makeText(getBaseContext(),"Enter origin address.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(dest.isEmpty()){
+            Toast.makeText(getBaseContext(),"Enter destination address.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Vui lòng chờ, đang tìm đường đi giữa hai điểm.");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        String origin = editOrigin.getText().toString();
-        String dest = editDestnation.getText().toString();
+
 
         DirectionsUrl directionsUrl = new DirectionsUrl();
         String url = directionsUrl.url(origin,dest);
@@ -114,9 +123,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         LatLng currentLocation = new LatLng(20.963081, 105.822766);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
-        markerList.add(mMap.addMarker(new MarkerOptions()
+        mMap.addMarker(new MarkerOptions()
                 .title("Xôi Gà Vinh Hoa")
-                .position(currentLocation)));
+                .position(currentLocation));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -206,7 +215,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String duration="";
             Double latStartlocation = null;
             Double lngStartlocation = null;
-
             Double latEndlocation = null;
             Double lngEndlocation = null;
 
