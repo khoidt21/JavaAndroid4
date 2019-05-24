@@ -67,7 +67,7 @@ import lib.DirectionsJSONParser;
 import lib.DirectionsUrl;
 import lib.JsonDataFromURL;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     GoogleMap mMap;
     EditText editOrigin;
@@ -141,6 +141,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        showCurrentLocation();
+    }
+    public void showCurrentLocation(){
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -149,7 +152,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 ActivityCompat.requestPermissions(this, LOCATION_PERMS, LOCATION_REQUEST);
             }
-
         } else {
             mMap.setMyLocationEnabled(true);
             FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -184,42 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
         JsonDataFromURL jsonDataFromURL = new JsonDataFromURL();
@@ -286,29 +252,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 List<HashMap<String, String>> path = result.get(i);
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
+
                     if(j==0) {
                         latStartlocation = Double.parseDouble(point.get("lat_start"));
                         continue;
                     }
-                    if(j==1){
+                    else if(j==1){
                         lngStartlocation = Double.parseDouble(point.get("lng_start"));
                         continue;
                     }
                     LatLng latLngStartLocation = new LatLng(latStartlocation,lngStartlocation);
+
                     if(j==2){
                         latEndlocation = Double.parseDouble(point.get("lat_end"));
                         continue;
                     }
-                    if(j==3) {
+                    else if(j==3) {
                         lngEndlocation = Double.parseDouble(point.get("lng_end"));
                         continue;
                     }
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
 
-                    if(j==4){ // lay distance tu list
+                    if(j==4){ // lay distance tu list HashMap
                         distance = (String)point.get("distance");
                         continue;
-                    }else if(j==5){ // lay duration tu list
+                    }else if(j==5){ // lay duration tu list HashMap
                         duration = (String)point.get("duration");
                         continue;
                     }

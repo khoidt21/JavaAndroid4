@@ -12,6 +12,5 @@ public class DirectionsUrl {
         String urlOrigin = URLEncoder.encode(origin,"utf-8");
         String urlDest = URLEncoder.encode(dest,"utf-8");
         return URLAPI + "origin=" + urlOrigin + "&destination=" + urlDest + "&key=" + KEYAPI;
-
     }
 }

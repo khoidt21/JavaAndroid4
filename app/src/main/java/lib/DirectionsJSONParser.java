@@ -13,58 +13,56 @@ public class DirectionsJSONParser  {
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
-        JSONArray jRoutes = null;
-        JSONArray jLegs = null;
-        JSONArray jSteps = null;
-        JSONObject jDistance = null;
-        JSONObject jDuration = null;
-        JSONObject jStartLocation = null;
-        JSONObject jEndlocation = null;
+        JSONArray jSọnRoutes = null;
+        JSONArray jSonLegs = null;
+        JSONArray jSonSteps = null;
+        JSONObject jSonDistance = null;
+        JSONObject jSonDuration = null;
+        JSONObject jSonStartLocation = null;
+        JSONObject jSonEndlocation = null;
 
         try {
 
-            jRoutes = jObject.getJSONArray("routes");
+            jSọnRoutes = jObject.getJSONArray("routes");
 
             // duyet tat ca routers
-            for(int i=0;i<jRoutes.length();i++){
-                jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
+            for(int i=0;i < jSọnRoutes.length();i++){
+                jSonLegs = ( (JSONObject)jSọnRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<HashMap<String, String>>();
 
                 // duyet tat ca legs
-                for(int j=0;j<jLegs.length();j++){
+                for(int j=0;j < jSonLegs.length();j++){
 
-                    // location start legs
-
-                    jStartLocation = ((JSONObject) jLegs.get(j)).getJSONObject("start_location");
-                    Double latStart = jStartLocation.getDouble("lat");
+                    // lay lat cua start_location
+                    jSonStartLocation = ((JSONObject) jSonLegs.get(j)).getJSONObject("start_location");
+                    Double latStart = jSonStartLocation.getDouble("lat");
                     HashMap<String,String> hmLatStartLocationLat = new HashMap<String, String>();
                     hmLatStartLocationLat.put("lat_start",Double.toString(latStart));
-//
-                    Double lngStart = jStartLocation.getDouble("lng");
+                    // lay lng cua start_location
+                    Double lngStart = jSonStartLocation.getDouble("lng");
                     HashMap<String,String> hmLngStartLocation = new HashMap<String, String>();
                     hmLngStartLocation.put("lng_start",Double.toString(lngStart));
-//
-//                    // location end legs
-//
-                    jEndlocation = ((JSONObject) jLegs.get(j)).getJSONObject("end_location");
-                    Double latEnd = jEndlocation.getDouble("lat");
+
+                    // location end legs
+                    jSonEndlocation = ((JSONObject) jSonLegs.get(j)).getJSONObject("end_location");
+                    Double latEnd = jSonEndlocation.getDouble("lat");
                     HashMap<String,String> hmLatEndLocation = new HashMap<String, String>();
                     hmLatEndLocation.put("lat_end",Double.toString(latEnd));
 
-                    Double lngEnd = jEndlocation.getDouble("lng");
+                    Double lngEnd = jSonEndlocation.getDouble("lng");
                     HashMap<String,String> hmLngEndLocation = new HashMap<String, String>();
                     hmLngEndLocation.put("lng_end",Double.toString(lngEnd));
 
 
                     // Lay distance tu json data */
-                    jDistance = ((JSONObject) jLegs.get(j)).getJSONObject("distance");
+                    jSonDistance = ((JSONObject) jSonLegs.get(j)).getJSONObject("distance");
                     HashMap<String, String> hmDistance = new HashMap<String, String>();
-                    hmDistance.put("distance", jDistance.getString("text"));
+                    hmDistance.put("distance", jSonDistance.getString("text"));
 
                     // Lay duration tu json data */
-                    jDuration = ((JSONObject) jLegs.get(j)).getJSONObject("duration");
+                    jSonDuration = ((JSONObject) jSonLegs.get(j)).getJSONObject("duration");
                     HashMap<String, String> hmDuration = new HashMap<String, String>();
-                    hmDuration.put("duration", jDuration.getString("text"));
+                    hmDuration.put("duration", jSonDuration.getString("text"));
 
                     // add lat object and lng object cua diem bat dau vao path
                      path.add(hmLatStartLocationLat);
@@ -75,20 +73,20 @@ public class DirectionsJSONParser  {
                     path.add(hmLngEndLocation);
 
 
-                    // Adding distance object vao path
+                    // add distance object vao path
                     path.add(hmDistance);
-                    // Adding duration object vao path
+                    // add duration object vao path
                     path.add(hmDuration);
-                    jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
+                    jSonSteps = ( (JSONObject)jSonLegs.get(j)).getJSONArray("steps");
 
-                    /** Traversing all steps */
-                    for(int k=0;k<jSteps.length();k++){
+                    // Duyet vong lap for qua tat ca steps
+                    for(int k=0;k < jSonSteps.length();k++){
                         String polyline = "";
-                        polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
+                        polyline = (String)((JSONObject)((JSONObject)jSonSteps.get(k)).get("polyline")).get("points");
                         List list = decodePolyLine(polyline);
 
-                        /** Traversing all points */
-                        for(int l=0;l <list.size();l++){
+                        // Duyet vong lap for qua tat ca points
+                        for(int l=0; l <list.size();l++){
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
                             hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
