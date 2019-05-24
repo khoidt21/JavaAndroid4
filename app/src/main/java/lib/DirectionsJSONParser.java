@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DirectionsJSONParser  {
-    /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
+    // Ham nhan JSOBJECT va tra ve danh sach cac danh sach chua vi do va kinh do
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
@@ -20,6 +20,8 @@ public class DirectionsJSONParser  {
         JSONObject jSonDuration = null;
         JSONObject jSonStartLocation = null;
         JSONObject jSonEndlocation = null;
+        String jSonEndAddress = null;
+        String jSonStartAddress = null;
 
         try {
 
@@ -33,26 +35,37 @@ public class DirectionsJSONParser  {
                 // duyet tat ca legs
                 for(int j=0;j < jSonLegs.length();j++){
 
-                    // lay lat cua start_location
+                    // lay lat cua start_location tu json data
                     jSonStartLocation = ((JSONObject) jSonLegs.get(j)).getJSONObject("start_location");
                     Double latStart = jSonStartLocation.getDouble("lat");
                     HashMap<String,String> hmLatStartLocationLat = new HashMap<String, String>();
                     hmLatStartLocationLat.put("lat_start",Double.toString(latStart));
-                    // lay lng cua start_location
+                    // lay lng cua start_location tu json data
                     Double lngStart = jSonStartLocation.getDouble("lng");
                     HashMap<String,String> hmLngStartLocation = new HashMap<String, String>();
                     hmLngStartLocation.put("lng_start",Double.toString(lngStart));
 
-                    // location end legs
+                    // lay lat cua end_location tu json data
                     jSonEndlocation = ((JSONObject) jSonLegs.get(j)).getJSONObject("end_location");
                     Double latEnd = jSonEndlocation.getDouble("lat");
                     HashMap<String,String> hmLatEndLocation = new HashMap<String, String>();
                     hmLatEndLocation.put("lat_end",Double.toString(latEnd));
 
+                    // lay end_address tu json data
+                    jSonEndAddress = ((JSONObject)jSonLegs.get(j)).getString("end_address");
+                    HashMap<String,String> hmEndAddress = new HashMap<String, String>();
+                    hmEndAddress.put("end_address",jSonEndAddress);
+
+                    // lay start_address tu json data
+
+                    jSonStartAddress = ((JSONObject)jSonLegs.get(j)).getString("start_address");
+                    HashMap<String,String> hmStartAddress = new HashMap<String, String>();
+                    hmStartAddress.put("start_address",jSonStartAddress);
+
+                    // lay lng cua end_location tu json data
                     Double lngEnd = jSonEndlocation.getDouble("lng");
                     HashMap<String,String> hmLngEndLocation = new HashMap<String, String>();
                     hmLngEndLocation.put("lng_end",Double.toString(lngEnd));
-
 
                     // Lay distance tu json data */
                     jSonDistance = ((JSONObject) jSonLegs.get(j)).getJSONObject("distance");
@@ -72,6 +85,10 @@ public class DirectionsJSONParser  {
                     path.add(hmLatEndLocation);
                     path.add(hmLngEndLocation);
 
+                    // add end_address vao path
+                    path.add(hmEndAddress);
+                    // add start_address vao path
+                    path.add(hmStartAddress);
 
                     // add distance object vao path
                     path.add(hmDistance);

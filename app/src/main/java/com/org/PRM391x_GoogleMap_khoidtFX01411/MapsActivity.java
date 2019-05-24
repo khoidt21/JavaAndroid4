@@ -1,67 +1,39 @@
-package com.org.myapplication;
+package com.org.PRM391x_GoogleMap_khoidtFX01411;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import lib.DirectionsJSONParser;
 import lib.DirectionsUrl;
@@ -234,12 +206,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             PolylineOptions lineOptions = null;
 
-            String distance="";
-            String duration="";
+            String distance ="";
+            String duration ="";
             Double latStartlocation = null;
             Double lngStartlocation = null;
             Double latEndlocation = null;
             Double lngEndlocation = null;
+            String endAddress ="";
+            String startAddress ="";
 
             if(result.size() < 1){
                 Toast.makeText(getBaseContext(),"Không tìm thấy đường đi.",Toast.LENGTH_SHORT).show();
@@ -273,10 +247,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
 
-                    if(j==4){ // lay distance tu list HashMap
+
+                    // lay endAddress
+                    if(j==4){
+                        endAddress = (String)point.get("end_address");
+                        continue;
+                    }
+                    else if(j==5){ // lay startAddress
+                        startAddress = (String)point.get("start_address");
+                        continue;
+                    }
+
+                    if(j==6){ // lay distance tu list HashMap
                         distance = (String)point.get("distance");
                         continue;
-                    }else if(j==5){ // lay duration tu list HashMap
+                    }else if(j==7){ // lay duration tu list HashMap
                         duration = (String)point.get("duration");
                         continue;
                     }
@@ -291,16 +276,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
                     mMap.addMarker(new MarkerOptions()
                             .position(latLngStartLocation)
-                            .title("From")
+                            .title(startAddress)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue)));
 
                     mMap.addMarker(new MarkerOptions()
-                            .position(latLngEndLocation).title("To").icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green)));
+                            .position(latLngEndLocation).title(endAddress).icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green)));
                 }
 
                 lineOptions.addAll(points);
                 lineOptions.width(12);
-                lineOptions.color(Color.RED);
+                lineOptions.color(Color.BLUE);
                 lineOptions.geodesic(true);
                 Log.d("log 1================",lineOptions.toString());
 

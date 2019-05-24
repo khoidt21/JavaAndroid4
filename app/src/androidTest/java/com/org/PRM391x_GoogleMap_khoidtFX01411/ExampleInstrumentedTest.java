@@ -1,4 +1,4 @@
-package com.org.myapplication;
+package com.org.PRM391x_GoogleMap_khoidtFX01411;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

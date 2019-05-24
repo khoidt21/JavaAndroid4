@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.org.myapplication">
+    package="com.org.PRM391x_GoogleMap_khoidtFX01411">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -43,7 +43,7 @@
             android:value="AIzaSyAGqOwbGtnXAIlQ3hoYvgYwDMRHKBgYYHo" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="com.org.PRM391x_GoogleMap_khoidtFX01411.MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
