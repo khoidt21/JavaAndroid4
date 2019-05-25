@@ -48,37 +48,35 @@
             android:paddingLeft="50dp"
             android:paddingBottom="40dp"
             android:src="@drawable/ic_clock" />
-
         <TextView
             android:id="@+id/tvDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
             android:text="0 min" />
-    </LinearLayout>
+        </LinearLayout>
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-        >
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         >
         <Button
             android:id="@+id/btnHistory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="History Search Map" />
+            android:text="History Search Map"
+            android:layout_gravity="center"/>
     </LinearLayout>
     <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="563dp"
-
             />
-</FrameLayout>
+    </FrameLayout>
 </LinearLayout>
 
 

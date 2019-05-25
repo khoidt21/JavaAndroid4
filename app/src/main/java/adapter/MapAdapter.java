@@ -8,11 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
-
 import com.org.PRM391x_GoogleMap_khoidtFX01411.R;
-
 import java.util.List;
-
 import dbhelper.MapDbhelper;
 import model.ModelMap;
 
@@ -48,13 +45,10 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder,final int i) {
         // xu ly set du lieu len textview
-
         TextView endAddress = viewHolder.itemView.findViewById(R.id.endaddress);
         TextView startAddress = viewHolder.itemView.findViewById(R.id.startaddress);
         TextView distance = viewHolder.itemView.findViewById(R.id.distance);
         TextView duration  = viewHolder.itemView.findViewById(R.id.duration);
-
-        //final ModelMap map = maps.get(i);
         startAddress.setText("From: " + maps.get(i).getStartAddress());
         endAddress.setText("To: " + maps.get(i).getEndAddress());
         distance.setText("Distance: " + maps.get(i).getDistance());
