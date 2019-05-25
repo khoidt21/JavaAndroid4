@@ -26,21 +26,17 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
         this.context = context;
         this.maps = maps;
     }
-
-
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         public ViewHolder(View view){
             super(view);
             view.setOnCreateContextMenuListener(this);
         }
-
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
         }
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -63,7 +59,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
         endAddress.setText("To: " + maps.get(i).getEndAddress());
         distance.setText("Distance: " + maps.get(i).getDistance());
         duration.setText("Duration: " + maps.get(i).getDuration());
-
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.org.PRM391x_GoogleMap_khoidtFX01411;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 import adapter.MapAdapter;
 import dbhelper.MapDbhelper;
+import lib.SimpleDividerItemDecoration;
 import model.ModelMap;
 
 public class ListMapSearchActivity extends AppCompatActivity {
@@ -28,6 +30,8 @@ public class ListMapSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_map);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        // xu ly border recyclerView
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         mapDbhelperDB = new MapDbhelper(getApplicationContext());;
         listMap = mapDbhelperDB.getAlarms();
         setAlarmToAdapter();
