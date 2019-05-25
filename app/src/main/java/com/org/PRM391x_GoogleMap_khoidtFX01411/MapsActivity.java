@@ -1,6 +1,7 @@
 package com.org.PRM391x_GoogleMap_khoidtFX01411;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -34,10 +35,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import dbhelper.MapDbhelper;
 import lib.DirectionsJSONParser;
 import lib.DirectionsUrl;
 import lib.JsonDataFromURL;
+import model.ModelMap;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -48,6 +52,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ProgressDialog progressDialog;
     TextView tvdistance;
     TextView tvduration;
+   // ArrayList<ModelMap> listMap;
+    ModelMap modelMap;
+    MapDbhelper mapDbhelper = null;
+    Button btnHistorySearchMap;
 
 
     private static final int LOCATION_REQUEST = 10;
@@ -64,12 +72,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+       // listMap = new ArrayList<ModelMap>();
+        modelMap = new ModelMap();
+        mapDbhelper = new MapDbhelper(getApplicationContext());
 
         editOrigin = (EditText) findViewById(R.id.editOrigin);
         editDestnation = (EditText) findViewById(R.id.editDest);
         tvdistance = (TextView) findViewById(R.id.tvDistance);
         tvduration = (TextView) findViewById(R.id.tvDuration);
         btnFindPath = (Button) findViewById(R.id.btnFindPath);
+        btnHistorySearchMap = (Button) findViewById(R.id.btnHistory);
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +90,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+        btnHistorySearchMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MapsActivity.this,ListMapSearchActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -115,6 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         showCurrentLocation();
     }
+    // ham lay vi tri hien tai
     public void showCurrentLocation(){
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -295,6 +315,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Ve tuyen duong di len google map
            // mMap.clear();
             mMap.addPolyline(lineOptions);
+            // set gia tri vao objects
+            modelMap.setEndAddress(endAddress);
+            modelMap.setStartAddress(startAddress);
+            modelMap.setDistance(distance);
+            modelMap.setDuration(duration);
+           // listMap.add(modelMap);
+            mapDbhelper.addMap(modelMap);
+
         }
     }
 }

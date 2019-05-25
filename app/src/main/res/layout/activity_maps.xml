@@ -27,9 +27,12 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_distance" />
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:src="@drawable/ic_distance"
+            android:paddingLeft="25dp"
+            android:paddingBottom="40dp"
+            />
 
         <TextView
             android:id="@+id/tvDistance"
@@ -52,6 +55,17 @@
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
             android:text="0 min" />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+        >
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="History Search Map" />
     </LinearLayout>
     <FrameLayout
     android:layout_width="match_parent"
