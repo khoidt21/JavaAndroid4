@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class JsonDataFromURL {
-
+    // ham download du lieu JSON tu URL
     public String downloadUrl(String strUrl) throws IOException{
         String data ="";
         InputStream inputStream = null;
@@ -20,16 +20,14 @@ public class JsonDataFromURL {
             httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.connect();
             inputStream = httpURLConnection.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuffer sb = new StringBuffer();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuffer stringBuffer = new StringBuffer();
             String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
             }
-            data = sb.toString();
-            br.close();
-            Log.d("data",data);
-
+            data = stringBuffer.toString();
+            bufferedReader.close();
         }
         catch (Exception ex){
             Log.d("Exception",ex.toString());

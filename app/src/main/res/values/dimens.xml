@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="linearlayout">48dp</dimen>
+    <dimen name="withImage">85dp</dimen>
+    <dimen name="heightImage">85dp</dimen>
+    <dimen name="paddingleftImageDistance">25dp</dimen>
+    <dimen name="paddingBottomImage">40dp</dimen>
+    <dimen name="textviewPaddingLeft">15dp</dimen>
+    <dimen name="paddingLeftClock">50dp</dimen>
+    <dimen name="heightfragment">563dp</dimen>
+    <dimen name="marginLeftItem">10dp</dimen>
+    <dimen name="sizeItem">17sp</dimen>
+    <dimen name="paddingTopItem">20dp</dimen>
+</resources>

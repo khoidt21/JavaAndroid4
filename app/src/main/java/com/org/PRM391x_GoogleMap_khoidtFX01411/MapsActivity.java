@@ -55,9 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     MapDbhelper mapDbhelper = null;
     Button btnHistorySearchMap;
 
-
     private static final int LOCATION_REQUEST = 10;
-
     private String[] LOCATION_PERMS = {android.Manifest.permission.ACCESS_FINE_LOCATION };
 
     @Override
@@ -115,10 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         progressDialog = ProgressDialog.show(this, "Please wait.","Finding direction..!", true);
         DirectionsUrl directionsUrl = new DirectionsUrl();
         String url = directionsUrl.url(origin, dest);
-
-        Log.d("url", url + "");
         DownloadAsyncTask downloadAsyncTaskTask = new DownloadAsyncTask();
-
         // Goi tien trinh lay du lieu tu URL
         downloadAsyncTaskTask.execute(url);
     }
@@ -153,7 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 CameraPosition cameraPosition = CameraPosition.builder().target(userCurrentLocation).zoom(25).build();
                                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 500, null);
                                 // hien thi market tai vi tri hien tai
-                                mMap.addMarker(new MarkerOptions().title("Current position location").position(userCurrentLocation));
+                                mMap.addMarker(new MarkerOptions().title("Current position").position(userCurrentLocation));
                             }
                         }
                     });
@@ -162,13 +157,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-
         switch (requestCode) {
             case LOCATION_REQUEST: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onMapReady(mMap);
                 } else {
-                    //Toast.makeText(this, R.string.location_permission_required_message, Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 return;
@@ -186,7 +179,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 data = jsonDataFromURL.downloadUrl(url[0]);
             } catch (Exception e) {
-                Log.d("Background Task", e.toString());
+                e.printStackTrace();
             }
             return data;
         }
@@ -198,7 +191,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    // class xu ly tien trinh du lieu sau tien trinh download du lieu hoan tat
+    // class xu ly tien trinh lay ve ket qua du lieu sau tien trinh download du lieu hoan tat
     class ParserAsyncTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
         @Override
@@ -221,7 +214,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
             progressDialog.dismiss();
-            Log.d("result", result.toString());
             ArrayList points = null;
             PolylineOptions lineOptions = null;
             String distance ="";
@@ -238,6 +230,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             for (int i = 0; i < result.size(); i++) {
+                // khoi tao ArrayList points
                 points = new ArrayList();
                 lineOptions = new PolylineOptions();
 
@@ -288,25 +281,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     double lat = Double.parseDouble(point.get("lat"));
                     double lng = Double.parseDouble(point.get("lng"));
                     LatLng position = new LatLng(lat, lng);
+                    // check neu points > 1 clear diem diem vua tim truoc do
                     if(points.size() > 1){
                         mMap.clear();
                     }
+                    // add position vao points
                     points.add(position);
+
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStartLocation, 15));
+                    // addMarker diem bat dau tim kiem vao Map
                     mMap.addMarker(new MarkerOptions()
                             .position(latLngStartLocation)
                             .title(startAddress)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue)));
-
+                    // addMarker diem ket thuc tim kiem vao Map
                     mMap.addMarker(new MarkerOptions()
                             .position(latLngEndLocation).title(endAddress).icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green)));
                 }
-
                 lineOptions.addAll(points);
                 lineOptions.width(12);
                 lineOptions.color(Color.BLUE);
                 lineOptions.geodesic(true);
-                Log.d("log 1================",lineOptions.toString());
 
             }
             tvdistance.setText(distance);

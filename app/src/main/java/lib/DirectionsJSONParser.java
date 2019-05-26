@@ -105,12 +105,13 @@ public class DirectionsJSONParser  {
 
                         // Duyet vong lap for qua tat ca points
                         for(int l=0; l <list.size();l++){
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
-                            hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
 
-
-                            path.add(hm);
+                            // khoi tao HashMap put toan bo cac kinh do va vi do vao HashMap
+                            HashMap<String, String> hashMap = new HashMap<String, String>();
+                            hashMap.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
+                            hashMap.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
+                            // add HashMap chua toan bo kinh do va vi do vao path
+                            path.add(hashMap);
                         }
                     }
                     routes.add(path);
@@ -124,6 +125,8 @@ public class DirectionsJSONParser  {
         }
         return routes;
     }
+
+    // ham decodePolyLine from Google Map direction API
     private List<LatLng> decodePolyLine(final String poly) {
         int len = poly.length();
         int index = 0;

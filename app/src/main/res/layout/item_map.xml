@@ -7,34 +7,29 @@
         android:id="@+id/startaddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="TextView"
-        android:textSize="17sp"
-        android:paddingTop="20dp"
+        android:layout_marginLeft="@dimen/marginLeftItem"
+        android:textSize="@dimen/sizeItem"
+        android:paddingTop="@dimen/paddingTopItem"
         />
-
     <TextView
         android:id="@+id/endaddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="TextView"
-        android:textSize="17sp"
+        android:layout_marginLeft="@dimen/marginLeftItem"
+        android:textSize="@dimen/sizeItem"
         />
     <TextView
         android:id="@+id/distance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="TextView"
-        android:textSize="17sp"
+        android:layout_marginLeft="@dimen/marginLeftItem"
+        android:textSize="@dimen/sizeItem"
         />
     <TextView
         android:id="@+id/duration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="TextView"
-        android:textSize="17sp"
+        android:layout_marginLeft="@dimen/marginLeftItem"
+        android:textSize="@dimen/sizeItem"
         />
 </LinearLayout>

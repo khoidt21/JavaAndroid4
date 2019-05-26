@@ -13,7 +13,6 @@ import model.ModelMap;
 
 public class ListMapSearchActivity extends AppCompatActivity {
 
-    ListView listView;
     public ArrayList<ModelMap> listMap = new ArrayList<>();
     MapAdapter mapAdapter;
     RecyclerView recyclerView;
@@ -28,8 +27,9 @@ public class ListMapSearchActivity extends AppCompatActivity {
         // xu ly border recyclerView
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
         // khoi tao doi tuong MapDbhelper
-        mapDbhelperDB = new MapDbhelper(getApplicationContext());;
-        listMap = mapDbhelperDB.getAlarms();
+        mapDbhelperDB = new MapDbhelper(getApplicationContext());
+        // get toan bo du lieu tim kiem map
+        listMap = mapDbhelperDB.getMaps();
         setMapToAdapter();
     }
     // ham set map len adapter

@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">History Search Map</string>
+    <string name="app_name">Google Map</string>
     <string name="title_activity_maps">Map</string>
+    <string name="origin">Enter origin address</string>
+    <string name="destination">Enter destination address</string>
+    <string name="findpath">FIND PATH</string>
+    <string name="distance">0 km</string>
+    <string name="duration">0 min</string>
+    <string name="historymap">History Search Map</string>
 </resources>

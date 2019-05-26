@@ -50,7 +50,7 @@ public class MapDbhelper extends SQLiteOpenHelper {
         db.close();
     }
     // ham get All search address
-    public ArrayList<ModelMap> getAlarms(){
+    public ArrayList<ModelMap> getMaps(){
 
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = new String[] { KEY_ID,KEY_END_ADDRESS, KEY_START_ADDRESS,KEY_DISTANCE,KEY_DURATION };

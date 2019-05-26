@@ -7,53 +7,52 @@
         android:id="@+id/editOrigin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter origin address" />
+        android:hint="@string/origin" />
     <EditText
         android:id="@+id/editDest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter destination address" />
+        android:hint="@string/destination" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/linearlayout"
         android:orientation="horizontal">
-
         <Button
             android:id="@+id/btnFindPath"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FIND PATH" />
+            android:text="@string/findpath" />
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
+            android:layout_width="@dimen/withImage"
+            android:layout_height="@dimen/heightImage"
             android:src="@drawable/ic_distance"
-            android:paddingLeft="25dp"
-            android:paddingBottom="40dp"
+            android:paddingLeft="@dimen/paddingleftImageDistance"
+            android:paddingBottom="@dimen/paddingBottomImage"
             />
 
         <TextView
             android:id="@+id/tvDistance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:text="0 km" />
+            android:paddingLeft="@dimen/textviewPaddingLeft"
+            android:text="@string/distance" />
 
         <ImageView
             android:id="@+id/icon1"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:paddingLeft="50dp"
-            android:paddingBottom="40dp"
+            android:layout_width="@dimen/withImage"
+            android:layout_height="@dimen/heightImage"
+            android:paddingLeft="@dimen/paddingLeftClock"
+            android:paddingBottom="@dimen/paddingBottomImage"
             android:src="@drawable/ic_clock" />
         <TextView
             android:id="@+id/tvDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:text="0 min" />
+            android:paddingLeft="@dimen/textviewPaddingLeft"
+            android:text="@string/duration" />
         </LinearLayout>
     <LinearLayout
          android:layout_width="match_parent"
@@ -64,7 +63,7 @@
             android:id="@+id/btnHistory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="History Search Map"
+            android:text="@string/historymap"
             android:layout_gravity="center"/>
     </LinearLayout>
     <FrameLayout
@@ -74,7 +73,7 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="563dp"
+            android:layout_height="@dimen/heightfragment"
             />
     </FrameLayout>
 </LinearLayout>
