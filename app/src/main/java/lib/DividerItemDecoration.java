@@ -13,7 +13,6 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public DividerItemDecoration(Context context) {
         mDivider = context.getResources().getDrawable(R.drawable.diveder);
     }
-
     // ham ve border bottom RecyclerView
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {

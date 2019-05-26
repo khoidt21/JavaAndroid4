@@ -27,12 +27,13 @@ public class ListMapSearchActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         // xu ly border recyclerView
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
+        // khoi tao doi tuong MapDbhelper
         mapDbhelperDB = new MapDbhelper(getApplicationContext());;
         listMap = mapDbhelperDB.getAlarms();
-        setAlarmToAdapter();
+        setMapToAdapter();
     }
-    public void setAlarmToAdapter(){
-
+    // ham set map len adapter
+    public void setMapToAdapter(){
         mapAdapter = new MapAdapter(this, listMap);
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);

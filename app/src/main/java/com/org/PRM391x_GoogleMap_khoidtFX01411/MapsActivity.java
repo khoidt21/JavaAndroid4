@@ -1,11 +1,13 @@
 package com.org.PRM391x_GoogleMap_khoidtFX01411;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ import model.ModelMap;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 0;
     GoogleMap mMap;
     EditText editOrigin;
     EditText editDestnation;
@@ -48,7 +51,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ProgressDialog progressDialog;
     TextView tvdistance;
     TextView tvduration;
-   // ArrayList<ModelMap> listMap;
     ModelMap modelMap;
     MapDbhelper mapDbhelper = null;
     Button btnHistorySearchMap;
@@ -68,7 +70,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-       // listMap = new ArrayList<ModelMap>();
         modelMap = new ModelMap();
         mapDbhelper = new MapDbhelper(getApplicationContext());
 
@@ -96,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
+    // ham tim kiem tu hai dia chi origin va destination
     private void searchLocation() throws UnsupportedEncodingException {
 
         String origin = editOrigin.getText().toString();
@@ -111,18 +112,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Waiting...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-
+        progressDialog = ProgressDialog.show(this, "Please wait.","Finding direction..!", true);
         DirectionsUrl directionsUrl = new DirectionsUrl();
         String url = directionsUrl.url(origin, dest);
 
         Log.d("url", url + "");
-        DownloadTask downloadTask = new DownloadTask();
-        // Downlaod du lieu JSON tu Google Directions API
-        downloadTask.execute(url);
+        DownloadAsyncTask downloadAsyncTaskTask = new DownloadAsyncTask();
+
+        // Goi tien trinh lay du lieu tu URL
+        downloadAsyncTaskTask.execute(url);
     }
 
     @Override
@@ -132,6 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     // ham lay vi tri hien tai
     public void showCurrentLocation(){
+        // kiem tra quyen truy cap ung dung
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -141,6 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ActivityCompat.requestPermissions(this, LOCATION_PERMS, LOCATION_REQUEST);
             }
         } else {
+            // hien thi vị tri hien tai
             mMap.setMyLocationEnabled(true);
             FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation()
@@ -148,10 +148,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-
+                                // khoi tao doi tuong LatLng vi tri hien tai
                                 LatLng userCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                CameraPosition cp = CameraPosition.builder().target(userCurrentLocation).zoom(25).build();
-                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp), 500, null);
+                                CameraPosition cameraPosition = CameraPosition.builder().target(userCurrentLocation).zoom(25).build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 500, null);
+                                // hien thi market tai vi tri hien tai
+                                mMap.addMarker(new MarkerOptions().title("Current position location").position(userCurrentLocation));
                             }
                         }
                     });
@@ -163,8 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         switch (requestCode) {
             case LOCATION_REQUEST: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onMapReady(mMap);
                 } else {
                     //Toast.makeText(this, R.string.location_permission_required_message, Toast.LENGTH_SHORT).show();
@@ -174,7 +175,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-    private class DownloadTask extends AsyncTask<String, Void, String> {
+    // class xu ly tien trinh download du lieu
+    private class DownloadAsyncTask extends AsyncTask<String, Void, String> {
 
         JsonDataFromURL jsonDataFromURL = new JsonDataFromURL();
         @Override
@@ -191,12 +193,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            ParserTask parserTask = new ParserTask();
-            parserTask.execute(result);
+            ParserAsyncTask parserAsyncTask = new ParserAsyncTask();
+            parserAsyncTask.execute(result);
         }
     }
 
-    class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+    // class xu ly tien trinh du lieu sau tien trinh download du lieu hoan tat
+    class ParserAsyncTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
@@ -212,16 +215,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return routes;
         }
-
+        // ham thuc hien tra ve ket qua sau khi tien trinh ket thuc
+        // lay ve endAddress startAddress distance duration lat lng
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
             progressDialog.dismiss();
             Log.d("result", result.toString());
             ArrayList points = null;
-
             PolylineOptions lineOptions = null;
-
             String distance ="";
             String duration ="";
             Double latStartlocation = null;
@@ -242,28 +244,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 List<HashMap<String, String>> path = result.get(i);
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
-
+                    // lay lat cua start_location
                     if(j==0) {
                         latStartlocation = Double.parseDouble(point.get("lat_start"));
                         continue;
                     }
+                    // lay lng cua start_location
                     else if(j==1){
                         lngStartlocation = Double.parseDouble(point.get("lng_start"));
                         continue;
                     }
+                    // khoi tao LatLng cua start_location
                     LatLng latLngStartLocation = new LatLng(latStartlocation,lngStartlocation);
-
+                    // lay lat cua end_location
                     if(j==2){
                         latEndlocation = Double.parseDouble(point.get("lat_end"));
                         continue;
                     }
+                    // lay lng cua end_location
                     else if(j==3) {
                         lngEndlocation = Double.parseDouble(point.get("lng_end"));
                         continue;
                     }
+                    // khoi tao LatLng cua end_location
                     LatLng latLngEndLocation = new LatLng(latEndlocation,lngEndlocation);
-
-
                     // lay endAddress
                     if(j==4){
                         endAddress = (String)point.get("end_address");
@@ -281,7 +285,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         duration = (String)point.get("duration");
                         continue;
                     }
-
                     double lat = Double.parseDouble(point.get("lat"));
                     double lng = Double.parseDouble(point.get("lng"));
                     LatLng position = new LatLng(lat, lng);
@@ -309,14 +312,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             tvdistance.setText(distance);
             tvduration.setText(duration);
             // Ve tuyen duong di len google map
-           // mMap.clear();
             mMap.addPolyline(lineOptions);
-            // set gia tri vao objects
+            // set gia tri vao objects class modelMap
             modelMap.setEndAddress(endAddress);
             modelMap.setStartAddress(startAddress);
             modelMap.setDistance(distance);
             modelMap.setDuration(duration);
-           // listMap.add(modelMap);
+            // add du lieu tim kiem vao sqlite
             mapDbhelper.addMap(modelMap);
 
         }

@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DirectionsJSONParser  {
-    // Ham nhan JSOBJECT va tra ve danh sach cac danh sach chua vi do va kinh do
+    // Ham nhan JSOBJECT va tra ve list routers chua vi do va kinh do
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
@@ -30,6 +30,7 @@ public class DirectionsJSONParser  {
             // duyet tat ca routers
             for(int i=0;i < jSọnRoutes.length();i++){
                 jSonLegs = ( (JSONObject)jSọnRoutes.get(i)).getJSONArray("legs");
+                // khoi tao list path kieu du lieu HashMap
                 List path = new ArrayList<HashMap<String, String>>();
 
                 // duyet tat ca legs
@@ -116,11 +117,11 @@ public class DirectionsJSONParser  {
                 }
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }catch (Exception e){
+        } catch (JSONException ex) {
+            System.out.println(ex.getMessage());
+        }catch (Exception ex){
+            System.out.println(ex.getMessage());
         }
-
         return routes;
     }
     private List<LatLng> decodePolyLine(final String poly) {
